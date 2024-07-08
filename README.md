@@ -18,7 +18,7 @@ EasyInvoice is designed as a microservices architecture where each service has a
 - Invoice Core: https://github.com/MathEyraud/Java-Learn-Spring-Data-Core/tree/Microservices
 This architecture ensures scalability, modularity, and ease of maintenance, making EasyInvoice a robust and flexible invoicing solution.
 
-## EasyInvoice Core (invoice-core)
+## EasyInvoice Core (core)
 ### Description:
 The 'invoice-core' module contains the core entity definitions and handles communication with the database. This module is the foundation of the EasyInvoice system, providing the necessary entity classes that are used across different microservices.
 https://github.com/MathEyraud/Java-Learn-Spring-Data-Core/tree/Microservices
