@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Form</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // Variable pour la communication avec l'application customer
+            const customerServiceUrl = "[[${customerServiceUrl}]]";
+
+            fetch(customerServiceUrl)
+                .then(response => response.json())
+                .then(customers => {
+                    var select = document.getElementById("existingCustomer");
+                    customers.forEach(customer => {
+                        var option      = document.createElement("option");
+                        option.value    = customer.id;
+                        option.text     = customer.name;
+                        select.appendChild(option);
+                    });
+                });
+
+            // Gestion de l'affichage des champs en fonction de la case à cocher
+            var newCustomerCheckbox = document.getElementById("newCustomerCheckbox");
+            var customerNameField   = document.getElementById("customerName");
+            var existingCustomerDiv = document.getElementById("existingCustomerDiv");
+            var newCustomerDiv      = document.getElementById("newCustomerDiv");
+            var requiredFields      = document.querySelectorAll("#newCustomerDiv input[required]");
+
+            newCustomerCheckbox.addEventListener("change", function() {
+
+                if (this.checked) {
+                    existingCustomerDiv.style.display = "none";
+                    newCustomerDiv.style.display = "block";
+                    requiredFields.forEach(field => field.required = true);
+
+                } else {
+                    existingCustomerDiv.style.display = "block";
+                    newCustomerDiv.style.display = "none";
+                    requiredFields.forEach(field => field.required = false);
+                    customerNameField.value = "";
+                }
+            });
+
+            document.getElementById("existingCustomer").addEventListener("change", function() {
+                var selectedOption = this.options[this.selectedIndex];
+                if (!newCustomerCheckbox.checked) {
+                    customerNameField.value = selectedOption.text;
+                }
+            });
+
+            // Initial trigger to set the required attributes correctly on page load
+            newCustomerCheckbox.dispatchEvent(new Event('change'));
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Formulaire de Facture</h1>
+
+<form th:action="@{/invoice/add-new-invoice}" th:object="${invoiceForm}" method="post">
+
+    <!-- CASE À COCHER POUR NOUVEAU CLIENT -->
+    <div>
+        <input type="checkbox" id="newCustomerCheckbox" name="newCustomerCheckbox" th:field="*{newCustomer}">
+        <label for="newCustomerCheckbox">Ajouter un nouveau client</label>
+    </div>
+
+    <!-- GESTION DU CLIENT EXISTANT -->
+    <div id="existingCustomerDiv">
+        <label for="existingCustomer">Sélectionnez un client existant :</label>
+        <select id="existingCustomer" name="customerId" th:field="*{customerId}">
+            <option value="">--Sélectionnez un client--</option>
+        </select><br/>
+    </div>
+
+    <!-- GESTION DU NOUVEAU CLIENT -->
+    <div id="newCustomerDiv" style="display: none;">
+        <label for="customerName">Nom du nouveau client :</label>
+        <input type="text" id="customerName" name="customerName" th:field="*{customerName}"/><br/>
+
+        <label for="street">Rue :</label>
+        <input type="text" id="street" name="street" th:field="*{street}"/><br/>
+
+        <label for="streetNumber">Numéro de rue :</label>
+        <input type="text" id="streetNumber" name="streetNumber" th:field="*{streetNumber}"/><br/>
+
+        <label for="city">Ville :</label>
+        <input type="text" id="city" name="city" th:field="*{city}"/><br/>
+
+        <label for="zipCode">Code postal :</label>
+        <input type="text" id="zipCode" name="zipCode" th:field="*{zipCode}"/><br/>
+
+        <label for="country">Pays :</label>
+        <input type="text" id="country" name="country" th:field="*{country}"/><br/>
+    </div>
+
+    <!-- GESTION DU NUMÉRO DE COMMANDE -->
+    <div>
+        <label for="orderNumber">Numéro de commande :</label>
+        <input type="text" id="orderNumber" th:field="*{orderNumber}" required/><br/>
+    </div>
+    <div th:if="${#fields.hasErrors('orderNumber')}" th:errors="*{orderNumber}"></div>
+
+    <!-- BOUTON D'ENVOI DES DONNÉES -->
+    <div>
+        <button type="submit">Soumettre</button>
+    </div>
+
+</form>
+
+</body>
+</html>

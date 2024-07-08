@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>List of Invoices</title>
+    </head>
+
+    <body>
+
+        <h1>Invoice Details</h1>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Invoice number</th>
+                    <th>Customer Name</th>
+                    <th>Order Number</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td th:text="${invoice.number}">number</td>
+                    <td th:text="${invoice.customer.name}">customer.name</td>
+                    <td th:text="${invoice.orderNumber}">orderNumber</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </body>
+
+</html>
